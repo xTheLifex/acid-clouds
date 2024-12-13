@@ -4,6 +4,13 @@ local audioFadeInTime = 2
 local animationTime = 0.5
 local matrixZScale = Vector(1, 1, 0.0001)
 
+local gradients = {
+	["left"] = Material("vgui/gradient-l", "smooth noclamp"),
+	["right"] = Material("vgui/gradient-r", "smooth noclamp"),
+	["up"] = Material("vgui/gradient-u", "smooth noclamp"),
+	["down"] = Material("vgui/gradient-d", "smooth noclamp")
+}
+
 -- character menu panel
 DEFINE_BASECLASS("ixSubpanelParent")
 local PANEL = {}
@@ -134,7 +141,7 @@ PANEL = {}
 
 AccessorFunc(PANEL, "bUsingCharacter", "UsingCharacter", FORCE_BOOL)
 
-local leftGradient = ix.gui.gradients["left"]
+local leftGradient = gradients["left"]ix.gui.
 
 local images = {}
 local files, dirs = file.Find("gamemodes/" .. Schema.folder .. "/backgrounds/*", "GAME")

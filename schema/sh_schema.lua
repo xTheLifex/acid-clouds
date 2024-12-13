@@ -6,7 +6,7 @@ Schema.description = "A schema based on Half-Life 2."
 -- Include netstream
 ix.util.Include("libs/thirdparty/sh_netstream2.lua")
 
-ix.util.include("libs/sh_utils.lua")
+ix.util.Include("libs/sh_utils.lua")
 
 ix.util.Include("sh_configs.lua")
 ix.util.Include("sh_commands.lua")
