@@ -141,8 +141,7 @@ PANEL = {}
 
 AccessorFunc(PANEL, "bUsingCharacter", "UsingCharacter", FORCE_BOOL)
 
-local leftGradient = gradients["left"]ix.gui.
-
+local leftGradient = gradients["left"]
 local images = {}
 local files, dirs = file.Find("gamemodes/" .. Schema.folder .. "/backgrounds/*", "GAME")
 
