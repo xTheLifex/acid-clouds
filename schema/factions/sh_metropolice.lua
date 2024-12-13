@@ -1,36 +1,64 @@
-
-FACTION.name = "Metropolice Force"
-FACTION.description = "A metropolice unit working as Civil Protection."
-FACTION.color = Color(50, 100, 150)
-FACTION.pay = 10
-FACTION.models = {"models/police.mdl"}
-FACTION.weapons = {"ix_stunstick"}
+FACTION.name = "Civil Protection"
+FACTION.description = "The Civil Protection is the police force responsible for law enforcement of The Combine."
+FACTION.color = Color(20, 120, 185)
+FACTION.abbreviation = "CP"
+FACTION.canSeeWaypoints = true
+FACTION.canAddWaypoints = true
+FACTION.canRemoveWaypoints = true
+FACTION.canUpdateWaypoints = true
+FACTION.pay = 25
 FACTION.isDefault = false
-FACTION.isGloballyRecognized = true
+FACTION.models = {
+	"models/ez2npc/police.mdl"
+}
+
+FACTION.skin = 0
 FACTION.runSounds = {[0] = "NPC_MetroPolice.RunFootstepLeft", [1] = "NPC_MetroPolice.RunFootstepRight"}
 FACTION.walkSounds = {[0] = "NPC_MetroPolice.FootstepLeft", [1] = "NPC_MetroPolice.FootstepRight"}
 
-function FACTION:OnCharacterCreated(client, character)
-	local inventory = character:GetInventory()
+ix.anim.SetModelClass("models/ez2npc/police.mdl", "metrocop")
 
-	inventory:Add("pistol", 1)
-	inventory:Add("pistolammo", 2)
-	inventory:Add("handheld_radio", 1)
+player_manager.AddValidModel("ixCPF", "models/ez2npc/police.mdl")
+player_manager.AddValidHands("ixCPF", "models/weapons/c_metrocop_hands.mdl", 0, "00000000")
+
+function FACTION:GetDefaultName(ply)
+	local callsign = utils.Pick({ "FLASH", "RANGER", "HUNTER", "BLADE", "SCAR", "HAMMER", "SWEEPER", "SWIFT", "FIST", "SWORD", "SAVAGE", "TRACKER", "SLASH", "RAZOR", "STAB", "SPEAR", "STRIKER", "DAGGER" })
+	local shortnum = math.random(1,9)
+	local identifier = Schema:ZeroNumber(math.random(100, 999), 3)
+
+	return string.format("CP:C9.RCT.%s-%s:%s", callsign, shortnum, identifier), true
 end
 
-local function Pick(t)
-    if (istable(t)) then
-		return t[math.random(1, #t)]
-    else
-		return t
-    end
+function FACTION:GetDeathSound(ply)
+	if not ( IsValid(ply) ) then
+		return
+	end
+
+	return "npc/metropolice/die" .. math.random(1, 4) .. ".wav"
 end
 
-function FACTION:GetDefaultName(client)
-	local tagline = Pick({ "FLASH", "RANGER", "HUNTER", "BLADE", "SCAR", "HAMMER", "SWEEPER", "SWIFT", "FIST", "SWORD", "SAVAGE", "TRACKER", "SLASH", "RAZOR", "STAB", "SPEAR", "STRIKER", "DAGGER" })
-	local tagnumber = math.random(1,9)
-	local id = Schema:ZeroNumber(math.random(1, 9999), 4)
-	return "CCA-C09:RcT." .. tagline .. "-" .. tagnumber .. ":" .. id, true
+function FACTION:GetPainSound(ply)
+	if not ( IsValid(ply) ) then
+		return
+	end
+
+	return "npc/metropolice/pain" .. math.random(1, 4) .. ".wav"
+end
+
+function FACTION:OnCharacterCreated(ply, char)
+	if not ( IsValid(ply) ) then
+		return
+	end
+
+	if not ( char ) then
+		return
+	end
+
+	char:SetClass(CLASS_CP_RECRUIT)
+	char:SetRank(RANK_CP_RECRUIT)
+
+	char:SetData("permaClass", char:GetClass())
+	char:SetData("permaRank", char:GetRank())
 end
 
 

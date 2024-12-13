@@ -1,40 +1,24 @@
-
 FACTION.name = "Overwatch Transhuman Arm"
-FACTION.description = "A transhuman Overwatch soldier produced by the Combine."
-FACTION.color = Color(150, 50, 50, 255)
-FACTION.pay = 40
-FACTION.models = {"models/combine_soldier.mdl"}
-FACTION.isDefault = false
-FACTION.isGloballyRecognized = true
-FACTION.runSounds = {[0] = "NPC_CombineS.RunFootstepLeft", [1] = "NPC_CombineS.RunFootstepRight"}
+FACTION.description = "The Overwatch Transhuman Arm is the primary force of The Combine on Earth."
+FACTION.color = Color(150, 20, 0)
+FACTION.abbreviation = "OTA"
+FACTION.models = {
+	"models/combine_soldier.mdl"
+}
 
-function FACTION:OnCharacterCreated(client, character)
-	local inventory = character:GetInventory()
-
-	inventory:Add("pistol", 1)
-	inventory:Add("pistolammo", 2)
-
-	inventory:Add("ar2", 1)
-	inventory:Add("ar2ammo", 2)
+function FACTION:GetDefaultName(ply)
+	local callsign = utils.Pick({"LEADER", "FLASH", "RANGER", "HUNTER", "BLADE", "SCAR", "HAMMER", "SWEEPER", "SWIFT", "FIST", "SWORD", "SAVAGE", "TRACKER", "SLASH", "RAZOR", "STAB", "SPEAR", "STRIKER", "DAGGER"})
+	local shortnum = math.random(1,9)
+	local identifier = Schema:ZeroNumber(math.random(1000, 9999), 4)
+	return string.format("OTA:S9.TS.%s-%s:%s", callsign, shortnum, identifier), true
 end
 
-function FACTION:GetDefaultName(client)
-	return "OTA-ECHO.OWS-" .. Schema:ZeroNumber(math.random(1, 99999), 5), true
+function FACTION:GetDeathSound(ply)
+	return "npc/combine_soldier/die" .. math.random(1, 3) .. ".wav"
 end
 
-function FACTION:OnTransferred(character)
-	character:SetName(self:GetDefaultName())
-	character:SetModel(self.models[1])
-end
-
-function FACTION:OnNameChanged(client, oldValue, value)
-	local character = client:GetCharacter()
-
-	if (!Schema:IsCombineRank(oldValue, "OWS") and Schema:IsCombineRank(value, "OWS")) then
-		character:JoinClass(CLASS_OWS)
-	elseif (!Schema:IsCombineRank(oldValue, "EOW") and Schema:IsCombineRank(value, "EOW")) then
-		character:JoinClass(CLASS_EOW)
-	end
+function FACTION:GetPainSound(ply)
+	return "npc/combine_soldier/pain" .. math.random(1, 3) .. ".wav"
 end
 
 FACTION_OTA = FACTION.index

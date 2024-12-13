@@ -1,8 +1,13 @@
-
 FACTION.name = "Citizen"
-FACTION.description = "A regular human citizen enslaved by the Universal Union."
-FACTION.color = Color(150, 125, 100, 255)
+FACTION.description = "The citizens are oppressed an oppressed group that have not joined the resistance nor serving the combine."
 FACTION.isDefault = true
+FACTION.color = Color(0, 100, 50)
+FACTION.abbreviation = "Citizen"
+FACTION.canSeeWaypoints = false
+FACTION.canAddWaypoints = false
+FACTION.canRemoveWaypoints = false
+FACTION.canUpdateWaypoints = false
+FACTION.pay = 10
 
 function FACTION:OnCharacterCreated(client, character)
 	local id = Schema:ZeroNumber(math.random(1, 99999), 5)
