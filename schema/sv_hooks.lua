@@ -210,36 +210,54 @@ function Schema:PlayerStaminaGained(client)
 end
 
 function Schema:GetPlayerPainSound(client)
-	if (client:IsCombine()) then
-		local sound = "NPC_MetroPolice.Pain"
+	local char = client:GetCharacter()
 
-		if (Schema:IsCombineRank(client:Name(), "SCN")) then
-			sound = "NPC_CScanner.Pain"
-		elseif (Schema:IsCombineRank(client:Name(), "SHIELD")) then
-			sound = "NPC_SScanner.Pain"
-		end
+	if not ( char ) then
+		return
+	end
 
-		return sound
+	local rank = ix.rank.list[char:GetRank()]
+
+	if ( rank and rank.GetPainSound ) then
+		return rank:GetPainSound(client)
+	end
+
+	local class = ix.class.list[char:GetClass()]
+
+	if ( class and class.GetPainSound ) then
+		return class:GetPainSound(client)
+	end
+
+	local faction = ix.faction.Get(char:GetFaction())
+	
+	if ( faction and faction.GetPainSound ) then
+		return faction:GetPainSound(client)
 	end
 end
 
 function Schema:GetPlayerDeathSound(client)
-	if (client:IsCombine()) then
-		local sound = "NPC_MetroPolice.Die"
+	local char = client:GetCharacter()
 
-		if (Schema:IsCombineRank(client:Name(), "SCN")) then
-			sound = "NPC_CScanner.Die"
-		elseif (Schema:IsCombineRank(client:Name(), "SHIELD")) then
-			sound = "NPC_SScanner.Die"
-		end
+	if not ( char ) then
+		return
+	end
 
-		for k, v in ipairs(player.GetAll()) do
-			if (v:IsCombine()) then
-				v:EmitSound(sound)
-			end
-		end
+	local rank = ix.rank.list[char:GetRank()]
 
-		return sound
+	if ( rank and rank.GetDeathSound ) then
+		return rank:GetDeathSound(client)
+	end
+
+	local class = ix.class.list[char:GetClass()]
+
+	if ( class and class.GetDeathSound ) then
+		return class:GetDeathSound(client)
+	end
+	
+	local faction = ix.faction.Get(char:GetFaction())
+	
+	if ( faction and faction.GetDeathSound ) then
+		return faction:GetDeathSound(client)
 	end
 end
 
@@ -392,3 +410,37 @@ netstream.Hook("ViewObjectivesUpdate", function(client, text)
 		Schema:AddCombineDisplayMessage("@cViewObjectivesFiller", nil, client, date:spanseconds())
 	end
 end)
+
+/* -------------------------------------------------------------------------- */
+/*                                 Acid Clouds                                */
+/* -------------------------------------------------------------------------- */
+
+
+net.Receive("ix.PlayerStartVoice", function(len, ply)
+	if not ( IsValid(ply) ) then
+		return
+	end
+
+	local char = ply:GetCharacter()
+
+	if not ( char ) then
+		return
+	end
+
+	hook.Run("PlayerStartVoice", ply)
+end)
+
+net.Receive("ix.PlayerEndVoice", function(len, ply)
+	if not ( IsValid(ply) ) then
+		return
+	end
+
+	local char = ply:GetCharacter()
+
+	if not ( char ) then
+		return
+	end
+
+	hook.Run("PlayerEndVoice", ply)
+end)
+

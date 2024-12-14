@@ -12,7 +12,7 @@ if SERVER then
     /*
     local resFactions = {  
         [FACTION_OTA] = true,
-        [FACTION_CP] = true
+        [FACTION_MPF] = true
     }
     */
     local resFactions = {

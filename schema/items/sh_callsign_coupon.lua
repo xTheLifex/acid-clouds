@@ -17,7 +17,7 @@ ITEM.functions.Apply = {
 		character:SetName("CP:C9.RCT." .. ix.faction.Get(client:Team()).Ranks[rank][1] .. ":" .. character:GetData("callsign")[1] .. ":" .. character:GetData("callsign")[2])
 	end,
 	OnCanRun = function(itemTable)
-		if itemTable.player:Team() == FACTION_CP then
+		if itemTable.player:Team() == FACTION_MPF then
 			return true
 		else
 			return false

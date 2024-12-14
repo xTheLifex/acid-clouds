@@ -1,5 +1,5 @@
 RANK.name = "Enforcement Operative"
-RANK.faction = FACTION_CP
+RANK.faction = FACTION_MPF
 RANK.description = "A Operative of the Civil Protection."
 RANK.skin = 0
 RANK.IsDefault = true

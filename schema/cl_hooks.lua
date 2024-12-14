@@ -36,15 +36,24 @@ function Schema:ChatTextChanged(text)
 
 		if (key) then
 			netstream.Start("PlayerChatTextChanged", key)
+			net.Start("ix.PlayerChatTextChanged")
+			net.WriteString(key)
+			net.SendToServer()
 		end
 	end
 end
 
 function Schema:FinishChat()
+	net.Start("ix.PlayerFinishChat")
+	net.SendToServer()
 	netstream.Start("PlayerFinishChat")
 end
 
 function Schema:CanPlayerJoinClass(client, class, info)
+	return false
+end
+
+function Schema:CanPlayerJoinRank(ply, rank, info)
 	return false
 end
 
@@ -272,4 +281,72 @@ end)
 netstream.Hook("ViewObjectives", function(data)
 	Schema:AddCombineDisplayMessage("@cViewObjectives")
 	vgui.Create("ixViewObjectives"):Populate(data)
+end)
+
+/* -------------------------------------------------------------------------- */
+/*                                 Acid Stuff                                 */
+/* -------------------------------------------------------------------------- */
+
+function Schema:HUDShouldDraw(element)
+	if ( element == "CHudVoiceStatus" or element == "CHudVoiceSelfStatus" ) then
+		return false
+	end
+end
+
+function Schema:PlayerEndVoice(ply)
+	net.Start("ix.PlayerEndVoice")
+	net.SendToServer()
+end
+
+function Schema:PlayerStartVoice(ply)
+	net.Start("ix.PlayerStartVoice")
+	net.SendToServer()
+
+	if ( IsValid(g_VoicePanelList) ) then
+		g_VoicePanelList:Remove()
+	end
+
+	return true
+end
+
+net.Receive("ix.Schema.OpenUI", function()
+	local panel = net.ReadString()
+
+	Schema:OpenUI(panel)
+end)
+
+net.Receive("ix.PlaySound", function()
+	local sound = net.ReadString()
+	local level = net.ReadFloat()
+	local pitch = net.ReadFloat()
+	local volume = net.ReadFloat()
+	local channel = net.ReadFloat()
+
+	EmitSound(sound, localPlayer:GetPos(), -1, channel, volume, level, 0, pitch)
+end)
+
+net.Receive("ix.PlayGesture", function(len)
+	if not ( IsValid(localPlayer) ) then
+		return
+	end
+
+	local playerT = net.ReadEntity()
+
+	if not ( IsValid(playerT) ) then
+		return
+	end
+
+	if not ( playerT:GetCharacter() ) then
+		return
+	end
+
+	local sequence = net.ReadString()
+
+	if not ( playerT:LookupSequence(sequence) ) then
+		return
+	end
+
+	local index, length = playerT:LookupSequence(sequence)
+
+	playerT:DoAnimationEvent(index)
 end)

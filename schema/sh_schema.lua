@@ -1,12 +1,13 @@
-
-Schema.name = "HL2 RP"
-Schema.author = "nebulous.cloud"
-Schema.description = "A schema based on Half-Life 2."
+Schema.name = "AcidClouds Half-Life 2 Roleplay"
+Schema.author = "RetroMato"
+Schema.description = "Immerse yourself in the world of The Half-Life 2 Universe."
 
 -- Include netstream
 ix.util.Include("libs/thirdparty/sh_netstream2.lua")
 
+-- Acid Clouds, Utils & Extension Functions
 ix.util.Include("libs/sh_utils.lua")
+ix.util.Include("sh_extensions.lua")
 
 ix.util.Include("sh_configs.lua")
 ix.util.Include("sh_commands.lua")

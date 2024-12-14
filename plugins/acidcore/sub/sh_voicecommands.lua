@@ -204,6 +204,7 @@ if (SERVER) then
     end
 
     function Schema:PlayerMessageSend(speaker, chatType, text, anonymous, receivers, rawText)
+        if (not IsValid(speaker)) then return end
         -- -------------------------------------------------------------------------- --
         --                                 Bird Import                                --
         -- -------------------------------------------------------------------------- --
