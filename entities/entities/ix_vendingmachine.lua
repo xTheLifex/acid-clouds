@@ -3,7 +3,7 @@ AddCSLuaFile()
 
 ENT.Type = "anim"
 ENT.PrintName = "Vending Machine"
-ENT.Category = "HL2 RP"
+ENT.Category = "ix: HL2RP"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 ENT.PhysgunDisable = true
@@ -48,7 +48,7 @@ if (SERVER) then
 		vendor:Spawn()
 		vendor:Activate()
 
-		Schema:SaveVendingMachines()
+		Schema:SaveData()
 		return vendor
 	end
 
@@ -153,7 +153,7 @@ if (SERVER) then
 
 	function ENT:OnRemove()
 		if (!ix.shuttingDown) then
-			Schema:SaveVendingMachines()
+			Schema:SaveData()
 		end
 	end
 else

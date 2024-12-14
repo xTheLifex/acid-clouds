@@ -1,13 +1,18 @@
-FACTION.name = "Citizen"
-FACTION.description = "The citizens are oppressed an oppressed group that have not joined the resistance nor serving the combine."
-FACTION.isDefault = true
-FACTION.color = Color(0, 100, 50)
-FACTION.abbreviation = "Citizen"
-FACTION.canSeeWaypoints = false
-FACTION.canAddWaypoints = false
+FACTION.name = "City Administration"
+FACTION.description = "Human Administrators advised by the Combine."
+FACTION.isDefault = false
+FACTION.color = Color(255, 200, 70, 255)
+FACTION.abbreviation = "CA"
+FACTION.canSeeWaypoints = true
+FACTION.canAddWaypoints = true
 FACTION.canRemoveWaypoints = false
 FACTION.canUpdateWaypoints = false
-FACTION.pay = 10
+FACTION.pay = 75
+FACTION.models = {
+	"models/taggart/gallahan.mdl",
+	"models/humans/suitfem/female_02.mdl",
+	"models/player/female_02_suit.mdl"
+}
 
 function FACTION:OnCharacterCreated(client, character)
 	local id = Schema:ZeroNumber(math.random(1, 99999), 5)
@@ -15,7 +20,6 @@ function FACTION:OnCharacterCreated(client, character)
 
 	character:SetData("cid", id)
 
-	inventory:Add("suitcase", 1)
 	inventory:Add("cid", 1, {
 		name = character:GetName(),
 		id = id
@@ -44,4 +48,4 @@ function FACTION:ModifyPlayerStep(ply, data)
 	data.volume = data.volume * (data.running and 0.5 or 0.4)
 end
 
-FACTION_CITIZEN = FACTION.index
+FACTION_CITYADMINISTRATION = FACTION.index

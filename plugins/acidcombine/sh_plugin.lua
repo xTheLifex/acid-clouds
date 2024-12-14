@@ -110,19 +110,3 @@ ix.command.Add("shove", {
 /* -------------------------------------------------------------------------- */
 
 local playerMeta = FindMetaTable("Player")
-
-
-function playerMeta:IsDispatch()
-	local name = self:Name()
-	local faction = self:Team()
-
-    for k, v in ipairs({ "SCN", "DvL", "SeC" }) do
-        if (Schema:IsCombineRank(name, v)) then
-            bStatus = true
-
-            break
-        end
-    end
-
-	return false
-end

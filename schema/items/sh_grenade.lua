@@ -1,132 +1,85 @@
 ITEM.name = "Grenade"
-ITEM.description = "A small, green colored MK3A2 grenade that explodes a few seconds after it is thrown."
-ITEM.model = "models/weapons/w_grenade.mdl"
-ITEM.weaponCategory = "grenade"
-ITEM.classes = {CLASS_EOW}
-ITEM.flag = "V"
-ITEM.width = 1
-ITEM.height = 1
-
-ITEM.functions.DropActive = {
-    name = "Drop Active", -- uses the "myFunctionPhrase" language phrase when displaying in the UI
-    tip = "Drops an active grenade on the floor.", -- uses the "myFunctionDescription" language phrase when displaying in the UI
-    icon = "icon16/bomb.png", -- path to the icon material
-    OnRun = function(item) 
-        local ply = item.player
-        timer.Simple(1, function() 
-            local nade = ents.Create("npc_grenade_frag")
-            local gpos = ply:GetAngles():Forward() * 42
-            gpos[3] = 0
-            nade:SetPos(ply:GetPos() + gpos)
-            nade:Spawn()
-            nade:Fire("SetTimer", "5")
-        end)
-        ply:ForceSequence("grenPlace")
-    end,
-    OnCanRun = function(item)
-        local ent = item.entity
-        local ply = item.player
-
-        if (IsValid(ent)) then return false end
-
-        if (!ply) then return false end
-        local char = ply:GetCharacter()
-        if (!char) then return false end
-
-        local class = ix.anim.GetModelClass(char:GetModel())
-        if (class != "overwatch") then return false end
-    end
-}
-
-ITEM.functions.Roll = {
-    name = "Roll", -- uses the "myFunctionPhrase" language phrase when displaying in the UI
-    tip = "Roll the grenade live on the floor..", -- uses the "myFunctionDescription" language phrase when displaying in the UI
-    icon = "icon16/bomb.png", -- path to the icon material
-    OnRun = function(item) 
-        local ply = item.player
-        timer.Simple(1, function() 
-            local nade = ents.Create("npc_grenade_frag")
-            local fw = ply:GetAngles():Forward()
-            fw[3] = 0
-            local gpos = fw * 42
-
-            local tr = util.TraceLine({
-                start = ply:GetPos() + gpos,
-                endpos = (ply:GetPos() + gpos) + Vector(0,0,-32),
-                filter = function(ent) return false end
-            })
-
-            nade:SetPos(tr.HitPos + Vector(0,0,8))
-            nade:Spawn()
-            local phys = nade:GetPhysicsObject()
-            local ang = ply:GetAngles()
-            ang:RotateAroundAxis(Vector(1,0,0), 90)
-            --TODO: Rotate around Y to properly roll the nade.
-            nade:SetAngles(ang)
-            phys:ApplyForceCenter(fw * 700)
-            nade:Fire("SetTimer", "5")
-        end)
-        ply:ForceSequence("grenDrop")
-    end,
-    OnCanRun = function(item)
-        local ent = item.entity
-        local ply = item.player
-
-        if (IsValid(ent)) then return false end
-
-        if (!ply) then return false end
-        local char = ply:GetCharacter()
-        if (!char) then return false end
-
-        local class = ix.anim.GetModelClass(char:GetModel())
-        if (class != "overwatch") then return false end
-    end
-}
+ITEM.description = "A small grenade that can be thrown."
+ITEM.model = "models/items/grenadeammo.mdl"
 
 ITEM.functions.Throw = {
-    name = "Throw", -- uses the "myFunctionPhrase" language phrase when displaying in the UI
-    tip = "Toss the grenade!", -- uses the "myFunctionDescription" language phrase when displaying in the UI
-    icon = "icon16/bomb.png", -- path to the icon material
-    OnRun = function(item) 
+    name = "Throw",
+    OnRun = function(item)
         local ply = item.player
+
+        if not ( IsValid(ply) ) then
+            return false
+        end
+
         local char = ply:GetCharacter()
 
-        timer.Simple(1, function() 
-            local nade = ents.Create("npc_grenade_frag")
-            local fw = ply:GetAngles():Forward()
-            fw[3] = 0
-            local gpos = fw * 42
-            nade:SetPos(ply:GetPos() + gpos + Vector(0,0,64))
-            nade:Spawn()
-            local phys = nade:GetPhysicsObject()
-            phys:ApplyForceCenter(fw * 1000)
-            nade:Fire("SetTimer", "5")
+        if not ( char ) then
+            return false
+        end
+
+        if ( ply:GetSequenceInfo(ply:LookupSequence("grenthrow")) ) then
+            ply:SetLocalVelocity(Vector(0, 0, 0))
+            ply:ForceSequence("grenthrow")
+        end
+
+        timer.Simple(0.7, function()
+            if not ( IsValid(ply) ) then // AKA Run the command and leave :skull:
+                return false
+            end
+
+            if not ( ply:GetCharacter() ) then
+                return false
+            end
+
+            local grenade = ents.Create("npc_grenade_frag")
+            grenade:SetPos(ply:EyePos() + ply:GetRight() * -8 + ply:GetForward() * 20 + ply:GetUp() * 4)
+            grenade:SetAngles(ply:GetForward():Angle())
+            grenade:Spawn()
+            grenade:Activate()
+            grenade:Fire("SetTimer", 2.90)
+            grenade:GetPhysicsObject():AddVelocity(ply:GetAimVector() * 950)
+            grenade:SetNWEntity("deployedBy", ply)
+            grenade:CallOnRemove("GrenadeRemove", function(this)
+                if ( IsValid(ply) ) then
+                    if not ( ply:GetCharacter() ) then
+                        return
+                    end
+
+                    if ( ply.ixDeployedEntities ) then
+                        if ( table.HasValue(ply.ixDeployedEntities, this:EntIndex()) ) then
+                            table.RemoveByValue(ply.ixDeployedEntities, this:EntIndex())
+                        end
+                    end
+
+                    this:SetNWEntity("deployedBy", nil)
+                end
+            end)
+
+            if not ( ply.ixDeployedEntities ) then
+                ply.ixDeployedEntities = {}
+            end
+
+            ply.ixDeployedEntities[#ply.ixDeployedEntities + 1] = grenade:EntIndex()
+
+            char:SetData("deployedEntities", ply.ixDeployedEntities)
         end)
 
-        local core = ix.plugin.Get("acidcore")
-        core:FlagAsResistance(ply, -1) -- until death
-
-
-        local class = ix.anim.GetModelClass(char:GetModel())
-        if (class == "metrocop") then
-            -- CIVIL PROTECTION
-            ply:ForceSequence("grenadethrow")
-        elseif (class == "overwatch") then
-            -- OVERWATCH
-            ply:ForceSequence("grenThrow")
-        else
-            -- REBEL?
-            ply:ForceSequence("throw1")
-        end
+        return true
     end,
+    
     OnCanRun = function(item)
-        local ent = item.entity
         local ply = item.player
 
-        if (!ply) then return false end
-        if (IsValid(ent)) then return false end
+        if not ( IsValid(ply) ) then
+            return false
+        end
 
         local char = ply:GetCharacter()
-        if (!char) then return false end
+
+        if not ( char ) then
+            return false
+        end
+
+        return true
     end
 }

@@ -1,5 +1,5 @@
 FACTION.name = "Airwatch"
-FACTION.description = "The Airwatch is responsible for aerial support and surveillance operations for Overwatch forces. It coordinates units such as City Scanners, Gunships, Dropships, and Hunter-Choppers to provide reconnaissance, reinforcements, and tactical advantages during operations. While it does not directly command all Overwatch forces or Citizens, Airwatch plays a critical role in supporting Combine dominance and maintaining control over Earth."
+FACTION.description = "The Airwatch is tasked with commanding all overwatch forces on the earth, as well as giving orders to Citizens. It's role also offers significant insight into the inner workings of the Combine."
 FACTION.color = Color(237, 109, 55)
 FACTION.abbreviation = "AW"
 FACTION.pay = 0

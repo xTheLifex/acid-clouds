@@ -1,8 +1,7 @@
 "ixhl2rp"
 {
-	"base"		"helix"
-	"title"		"HL2 RP"
-	"author"	"nebulous.cloud"
-	"category"	"rp"
-	"menusystem" "1"
+	"base" 			"helix"
+	"title" 		"AcidClouds Half-Life 2 Roleplay"
+	"author" 		"retromato"
+	"menusystem"	"1"
 }
