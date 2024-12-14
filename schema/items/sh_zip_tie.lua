@@ -1,9 +1,8 @@
-
-ITEM.name = "Zip Tie"
+ITEM.name = "Zip tie"
 ITEM.description = "An orange zip-tie used to restrict people."
-ITEM.price = 8
+ITEM.price = 0
 ITEM.model = "models/items/crossbowrounds.mdl"
-ITEM.factions = {FACTION_MPF, FACTION_OTA}
+ITEM.factions = {FACTION_CP, FACTION_OTA}
 ITEM.functions.Use = {
 	OnRun = function(itemTable)
 		local client = itemTable.player
@@ -24,7 +23,7 @@ ITEM.functions.Use = {
 				target:SetNetVar("tying")
 				target:NotifyLocalized("fTiedUp")
 
-				if (target:IsCombine()) then
+				if (Schema:IsCombine()) then
 					Schema:AddCombineDisplayMessage("@cLosingContact", Color(255, 255, 255, 255))
 					Schema:AddCombineDisplayMessage("@cLostContact", Color(255, 0, 0, 255))
 				end

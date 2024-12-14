@@ -31,7 +31,17 @@ if (SERVER) then
         "npc_combinegunship",
         "npc_manhack",
         "npc_sniper",
-        "npc_rp_combine_s"
+        "npc_rp_combine_s",
+        "zb_metropolice",
+        "zb_metropolice_elite",
+        "zb_crab_synth",
+        "zb_hunter",
+        "zb_mortar_synth",
+        "zb_combine_nova_prospekt",
+        "zb_combine_elite",
+        "zb_combine_soldier",
+        "zb_stalker",
+        "npc_apcdriver"
     }
     sides[SIDE_ANTLIONS] = {
         "npc_antlion",
@@ -66,10 +76,21 @@ if (SERVER) then
         "npc_dog",
         "npc_barney",
         "npc_alyx",
-        "npc_turret_floor_resistance"
+        "zb_kleiner",
+        "zb_human_medic_f",
+        "zb_human_rebel_f",
+        "zb_human_refugee_f",
+        "zb_human_medic",
+        "zb_human_rebel",
+        "zb_human_refugee",
+        "zb_odessa",
+        "zb_friendly_hunter",
+        "zb_vortigaunt",
     }
     sides[SIDE_CIVILIAN] = {
-        "npc_mossman"
+        "npc_mossman",
+        "zb_human_civilian_f",
+        "zb_human_civilian",
     }
 
     local relations = {}

@@ -5,6 +5,7 @@ FACTION.abbreviation = "OTA"
 FACTION.models = {
 	"models/combine_soldier.mdl"
 }
+FACTION.runSounds = {[0] = "NPC_CombineS.RunFootstepLeft", [1] = "NPC_CombineS.RunFootstepRight"}
 
 function FACTION:GetDefaultName(ply)
 	local callsign = utils.Pick({"LEADER", "FLASH", "RANGER", "HUNTER", "BLADE", "SCAR", "HAMMER", "SWEEPER", "SWIFT", "FIST", "SWORD", "SAVAGE", "TRACKER", "SLASH", "RAZOR", "STAB", "SPEAR", "STRIKER", "DAGGER"})

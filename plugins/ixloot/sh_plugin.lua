@@ -39,10 +39,6 @@ if ( CLIENT ) then
         local ply = LocalPlayer()
         local ent = ent:GetClass()
 
-        if ( Schema:IsCombine()) then
-            return false
-        end
-
         if not ( ent:find("ix_loot") ) then
             return false
         end
