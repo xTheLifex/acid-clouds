@@ -16,7 +16,7 @@ if SERVER then
     }
     */
     local resFactions = {
-
+        FACTION_OTA
     }--fill this table
 
     function PLUGIN:ScalePlayerDamage(ply,hitgroup,dmginfo )

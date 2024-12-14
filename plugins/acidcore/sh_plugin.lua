@@ -13,3 +13,6 @@ ix.util.Include("sub/sh_relationships.lua")
 --ix.util.Include("sub/clothing/sh_clothing.lua")
 --ix.util.Include("sub/food/sh_food.lua")
 
+ix.util.Include("voices/sh_biotic.lua")
+ix.util.Include("voices/sh_citizen_male.lua")
+ix.util.Include("voices/sh_citizen_female.lua")

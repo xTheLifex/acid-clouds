@@ -12,6 +12,8 @@ if (SERVER) then
     local SIDE_RESISTANCE = 5
     local SIDE_CIVILIAN = 6
 
+    local PRIORITY = 10
+
     local sides = {}
     sides[SIDE_COMBINE] = {
         "npc_combine_s",
@@ -194,7 +196,42 @@ if (SERVER) then
                 ["weapon_grenade"] = true,
                 ["weapon_shotgun"] = true,
                 ["weapon_rpg"] = true,
-                ["ix_pistol"] = true,
+                ["weapon_vj_9mmpistol"] = true,
+                ["weapon_vj_357"] = true,
+                ["weapon_vj_ar2"] = true,
+                ["weapon_vj_glock17"] = true,
+                ["weapon_vj_m16a1"] = true,
+                ["weapon_vj_mp40"] = true,
+                ["weapon_vj_smg1"] = true,
+                ["weapon_vj_spas12"] = true,
+                ["weapon_hl2axe"] = true,
+                ["weapon_hl2bottle"] = true,
+                ["weapon_hl2hook"] = true,
+                ["weapon_hl2pan"] = true,
+                ["weapon_hl2pickaxe"] = true,
+                ["weapon_hl2pipe"] = true,
+                ["weapon_hl2pot"] = true,
+                ["weapon_hl2shovel"] = true,
+                ["ez2cwep_magnum"] = true,
+                ["ez2cwep_ar2"] = true,
+                ["ez2cwep_ar2_proto"] = true,
+                ["ez2cwep_crossbow"] = true,
+                ["ez2cwep_mp5"] = true,
+                ["ez2cwep_pistol"] = true,
+                ["ez2cwep_grenade"] = true,
+                ["ez2cwep_pulse_pistol"] = true,
+                ["ez2cwep_rpg"] = true,
+                ["ez2cwep_slam"] = true,
+                ["ez2cwep_shotgun"] = true,
+                ["ez2cwep_smg"] = true,
+                ["plutonic_acidcloudcombinesniper"] = true,
+                ["plutonic_acidcloudmp5k"] = true,
+                ["plutonic_acidcloudmp7"] = true,
+                ["plutonic_acidcloudaxe"] = true,
+                ["plutonic_acidcloudar2prototype"] = true,
+                ["plutonic_acidcloudsspas12"] = true,
+                ["plutonic_acidcloudar2"] = true,
+                ["plutonic_acidcloudusp"] = true
             }
 
             local hasGuns = guns[ply:GetActiveWeapon()] or false
@@ -268,22 +305,27 @@ if (SERVER) then
                         local theirside = self:GetNPCSide(target)
                         --self:Log("I am " .. npc:GetClass() .. " and my side is " .. myside .. " and my target side is " .. theirside)
                         if (myside and theirside) then
-                            if (myside == theirside) then npc:AddEntityRelationship(target, D_LI) end
+                            if (myside == theirside) then npc:AddEntityRelationship(target, D_LI, PRIORITY) end
                             local relation = self:GetSideRelationship(myside, theirside)
                             if (relation) then
-                                npc:AddEntityRelationship(target, relation)
+                                npc:AddEntityRelationship(target, relation, PRIORITY)
                             end
                         end
                     elseif(b:IsPlayer()) then
                         local target = b
                         local myside = self:GetNPCSide(npc)
                         local theirside = self:GetPlayerSide(target)
+
+                        if (self.observers[target]) then
+                            npc:AddEntityRelationship(target, D_LI, PRIORITY)
+                        end
+
                         --self:Log("I am " .. npc:GetClass() .. " and my side is " .. myside .. " and my target player side is " .. theirside)
                         if (myside and theirside) then
-                            if (myside == theirside) then npc:AddEntityRelationship(target, D_LI) end
+                            if (myside == theirside) then npc:AddEntityRelationship(target, D_LI, PRIORITY) end
                             local relation = self:GetSideRelationship(myside, theirside)
                             if (relation) then
-                                npc:AddEntityRelationship(target, relation)
+                                npc:AddEntityRelationship(target, relation, PRIORITY)
                             end 
                         end
                     end
@@ -299,10 +341,19 @@ if (SERVER) then
 
     function PLUGIN:OnEntityCreated(ent)
         if (ent:IsNPC()) then
+            for _,ply in ipairs(player.GetAll()) do
+                -- Null relationship by default, will be updated soon after.
+                -- This tries to prevents npc from commiting friendly fire for a few seconds.
+                ent:AddEntityRelationship(ply, D_LI) 
+            end
             self:UpdateRelationships()
         end
     end
-    
+
+    function PLUGIN:OnPlayerObserve(client, state)
+        if not self.observers then return end
+        self.observers[client] = not state
+    end
 
     function PLUGIN:Think()
         local t = self.relThink or 0.0
@@ -312,6 +363,7 @@ if (SERVER) then
         end
 
         self.relResistanceTimeouts = self.relResistanceTimeouts or {}
+        self.observers = self.observers or {}
         
         for ply,time in pairs(self.relResistanceTimeouts) do
             local time = self.relResistanceTimeouts[ply] or 0
